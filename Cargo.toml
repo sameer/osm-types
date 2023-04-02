@@ -1,0 +1,15 @@
+[package]
+name = "osm-types"
+version = "0.1.0"
+authors = [ "Sameer Puri <cargo@purisa.me>" ]
+edition = "2021"
+description = "OSM Element Types"
+homepage = "https://github.com/sameer/osm-types"
+repository = "https://github.com/sameer/osm-types"
+license = "MIT OR Apache-2.0"
+keywords = ["osm", "map", "geojson"]
+categories = ["science::geo"]
+
+[dependencies]
+chrono = "0.4"
+rust_decimal = "1"
