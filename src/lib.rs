@@ -11,9 +11,9 @@ pub enum Element {
     Relation(Relation),
 }
 
-/// Opaque node identifiers
+/// [Element] identifier
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub struct Id(i64);
+pub struct Id(pub i64);
 
 /// Single point in space
 ///
