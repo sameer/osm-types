@@ -1,6 +1,6 @@
 [package]
 name = "osm-types"
-version = "0.1.1"
+version = "0.1.2"
 authors = [ "Sameer Puri <cargo@purisa.me>" ]
 edition = "2021"
 description = "OSM Element Types"
@@ -12,4 +12,6 @@ categories = ["science::geo"]
 
 [dependencies]
 chrono = "0.4"
+fnv = "1"
+kstring = "2"
 rust_decimal = "1"

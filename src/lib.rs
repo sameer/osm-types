@@ -1,6 +1,6 @@
-use std::collections::HashMap;
-
 use chrono::NaiveDateTime;
+use fnv::FnvHashMap as HashMap;
+use kstring::KString;
 use rust_decimal::Decimal;
 
 /// Fundamental representation of geographic features in OpenStreetMap
@@ -21,7 +21,7 @@ pub struct Id(pub i64);
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Node {
     pub id: Id,
-    pub attributes: HashMap<String, String>,
+    pub attributes: HashMap<KString, KString>,
     pub info: Option<Info>,
     pub lat: Decimal,
     pub lon: Decimal,
@@ -33,7 +33,7 @@ pub struct Node {
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Way {
     pub id: Id,
-    pub attributes: HashMap<String, String>,
+    pub attributes: HashMap<KString, KString>,
     pub info: Option<Info>,
     pub refs: Vec<Id>,
 }
@@ -44,7 +44,7 @@ pub struct Way {
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Relation {
     pub id: Id,
-    pub attributes: HashMap<String, String>,
+    pub attributes: HashMap<KString, KString>,
     pub info: Option<Info>,
     pub members: Vec<Member>,
 }
@@ -55,7 +55,7 @@ pub struct Member {
     pub id: Id,
     pub ty: MemberType,
     /// <https://wiki.openstreetmap.org/wiki/Relation#Roles>
-    pub role: Option<String>,
+    pub role: Option<KString>,
 }
 
 /// Type of [Element] represented by [Member]
@@ -74,13 +74,13 @@ pub struct Info {
     /// Time of last edit
     pub timestamp: Option<NaiveDateTime>,
     /// Group of edits that this version belongs to
-    /// 
+    ///
     /// <https://wiki.openstreetmap.org/wiki/Changeset>
     pub changeset: Option<i64>,
     /// User ID
     pub uid: Option<i32>,
     /// Username
-    pub user: Option<String>,
+    pub user: Option<KString>,
     /// Whether a [Element] is visible or not
     ///
     /// Assume this to be true if it is [None]. If [Some(false)], the [Element] was deleted.
