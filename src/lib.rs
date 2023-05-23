@@ -4,6 +4,8 @@ use kstring::KString;
 use rust_decimal::Decimal;
 
 /// Fundamental representation of geographic features in OpenStreetMap
+///
+/// <https://wiki.openstreetmap.org/wiki/Elements>
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum Element {
     Node(Node),
@@ -12,7 +14,7 @@ pub enum Element {
 }
 
 /// [Element] identifier
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Hash)]
 pub struct Id(pub i64);
 
 /// Single point in space
@@ -21,7 +23,7 @@ pub struct Id(pub i64);
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Node {
     pub id: Id,
-    pub attributes: HashMap<KString, KString>,
+    pub tags: HashMap<KString, KString>,
     pub info: Option<Info>,
     pub lat: Decimal,
     pub lon: Decimal,
@@ -33,7 +35,7 @@ pub struct Node {
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Way {
     pub id: Id,
-    pub attributes: HashMap<KString, KString>,
+    pub tags: HashMap<KString, KString>,
     pub info: Option<Info>,
     pub refs: Vec<Id>,
 }
@@ -44,7 +46,7 @@ pub struct Way {
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Relation {
     pub id: Id,
-    pub attributes: HashMap<KString, KString>,
+    pub tags: HashMap<KString, KString>,
     pub info: Option<Info>,
     pub members: Vec<Member>,
 }
@@ -54,6 +56,8 @@ pub struct Relation {
 pub struct Member {
     pub id: Id,
     pub ty: MemberType,
+    /// Describes the function of this member in its relation
+    ///
     /// <https://wiki.openstreetmap.org/wiki/Relation#Roles>
     pub role: Option<KString>,
 }
@@ -67,22 +71,29 @@ pub enum MemberType {
 }
 
 /// Non-geographical information about a [Element]
+///
+/// <https://wiki.openstreetmap.org/wiki/Elements#Common_attributes>
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct Info {
     /// Version number of this revision of the [Element]
+    ///
+    /// Starts at 1 and incremented with each update
     pub version: i32,
-    /// Time of last edit
+    /// Time of last modification
     pub timestamp: Option<NaiveDateTime>,
     /// Group of edits that this version belongs to
     ///
     /// <https://wiki.openstreetmap.org/wiki/Changeset>
     pub changeset: Option<i64>,
-    /// User ID
+    /// ID of user who performed the last modification
     pub uid: Option<i32>,
-    /// Username
+    /// Display name of the user
+    ///
+    /// This will change without a version increment if the user modifies their display name.
     pub user: Option<KString>,
     /// Whether a [Element] is visible or not
     ///
-    /// Assume this to be true if it is [None]. If [Some(false)], the [Element] was deleted.
+    /// Assume this to be true if it is [None]. If [Some(false)], the [Element] was deleted
+    /// and was returned by a history call.
     pub visible: Option<bool>,
 }
