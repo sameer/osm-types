@@ -13,8 +13,34 @@ pub enum Element {
     Relation(Relation),
 }
 
+impl Element {
+    pub fn id(&self) -> Id {
+        match self {
+            Element::Node(Node { id, .. })
+            | Element::Way(Way { id, .. })
+            | Element::Relation(Relation { id, .. }) => *id,
+        }
+    }
+
+    pub fn tags(&self) -> &HashMap<KString, KString> {
+        match self {
+            Element::Node(Node { tags, .. })
+            | Element::Way(Way { tags, .. })
+            | Element::Relation(Relation { tags, .. }) => tags,
+        }
+    }
+
+    pub fn info(&self) -> Option<&Info> {
+        match self {
+            Element::Node(Node { info, .. })
+            | Element::Way(Way { info, .. })
+            | Element::Relation(Relation { info, .. }) => info.as_ref(),
+        }
+    }
+}
+
 /// [Element] identifier
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Hash)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash)]
 pub struct Id(pub i64);
 
 /// Single point in space
