@@ -3,7 +3,7 @@ use fnv::FnvHashMap as HashMap;
 use kstring::KString;
 use rust_decimal::Decimal;
 
-/// Fundamental representation of geographic features in OpenStreetMap
+/// Fundamental representation of geographical features in OpenStreetMap
 ///
 /// <https://wiki.openstreetmap.org/wiki/Elements>
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -37,6 +37,40 @@ impl Element {
             | Element::Relation(Relation { info, .. }) => info.as_ref(),
         }
     }
+
+    /// Removes [Info] if present
+    pub fn strip_info(&mut self) {
+        let info = match self {
+            Element::Node(Node { info, .. })
+            | Element::Way(Way { info, .. })
+            | Element::Relation(Relation { info, .. }) => info,
+        };
+        *info = None;
+    }
+
+    pub fn as_node(&self) -> Option<&Node> {
+        if let Element::Node(n) = self {
+            Some(n)
+        } else {
+            None
+        }
+    }
+
+    pub fn as_way(&self) -> Option<&Way> {
+        if let Element::Way(w) = self {
+            Some(w)
+        } else {
+            None
+        }
+    }
+
+    pub fn as_relation(&self) -> Option<&Relation> {
+        if let Element::Relation(r) = self {
+            Some(r)
+        } else {
+            None
+        }
+    }
 }
 
 /// [Element] identifier
@@ -51,8 +85,17 @@ pub struct Node {
     pub id: Id,
     pub tags: HashMap<KString, KString>,
     pub info: Option<Info>,
+    /// [WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System#WGS84) latitude (y)
     pub lat: Decimal,
+    /// [WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System#WGS84) longitude (x)
     pub lon: Decimal,
+}
+
+impl Node {
+    /// Removes [Info] if present
+    pub fn strip_info(&mut self) {
+        self.info = None;
+    }
 }
 
 /// Ordered list of [Node]s
@@ -63,18 +106,41 @@ pub struct Way {
     pub id: Id,
     pub tags: HashMap<KString, KString>,
     pub info: Option<Info>,
+
+    /// Nodes in the way
+    ///
+    /// In an [open way](https://wiki.openstreetmap.org/wiki/Way#Open_way_%28open_polyline%29), the first and last nodes differ.
+    /// In a [closed way](https://wiki.openstreetmap.org/wiki/Way#Closed_way_%28closed_polyline%29), the first and last nodes are identical.
     pub refs: Vec<Id>,
+}
+
+impl Way {
+    /// Removes [Info] if present
+    pub fn strip_info(&mut self) {
+        self.info = None;
+    }
 }
 
 /// Ordered list of [Element]s
 ///
+/// This is a logical representation
 /// <https://wiki.openstreetmap.org/wiki/Relation>
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Relation {
     pub id: Id,
     pub tags: HashMap<KString, KString>,
     pub info: Option<Info>,
+    /// There should be no more than 300 members per relation, with a hard limit of 32,000
+    ///
+    /// <https://wiki.openstreetmap.org/wiki/Relation#Size>
     pub members: Vec<Member>,
+}
+
+impl Relation {
+    /// Removes [Info] if present
+    pub fn strip_info(&mut self) {
+        self.info = None;
+    }
 }
 
 /// [Element] in a [Relation]
