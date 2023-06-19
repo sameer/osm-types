@@ -7,6 +7,7 @@ use rust_decimal::Decimal;
 ///
 /// <https://wiki.openstreetmap.org/wiki/Elements>
 #[derive(Debug, PartialEq, Eq, Clone)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Element {
     Node(Node),
     Way(Way),
@@ -75,12 +76,14 @@ impl Element {
 
 /// [Element] identifier
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Id(pub i64);
 
 /// Single point in space
 ///
 /// <https://wiki.openstreetmap.org/wiki/Node>
 #[derive(Debug, PartialEq, Eq, Clone)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Node {
     pub id: Id,
     pub tags: HashMap<KString, KString>,
@@ -102,6 +105,7 @@ impl Node {
 ///
 /// <https://wiki.openstreetmap.org/wiki/Way>
 #[derive(Debug, PartialEq, Eq, Clone)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Way {
     pub id: Id,
     pub tags: HashMap<KString, KString>,
@@ -126,6 +130,7 @@ impl Way {
 /// This is a logical representation
 /// <https://wiki.openstreetmap.org/wiki/Relation>
 #[derive(Debug, PartialEq, Eq, Clone)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Relation {
     pub id: Id,
     pub tags: HashMap<KString, KString>,
@@ -145,6 +150,7 @@ impl Relation {
 
 /// [Element] in a [Relation]
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Member {
     pub id: Id,
     pub ty: MemberType,
@@ -156,6 +162,7 @@ pub struct Member {
 
 /// Type of [Element] represented by [Member]
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum MemberType {
     Node,
     Way,
@@ -166,6 +173,7 @@ pub enum MemberType {
 ///
 /// <https://wiki.openstreetmap.org/wiki/Elements#Common_attributes>
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Info {
     /// Version number of this revision of the [Element]
     ///
